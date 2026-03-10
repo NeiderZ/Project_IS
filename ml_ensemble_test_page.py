@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import pickle
 
 def show():
     st.markdown("""
@@ -96,7 +95,7 @@ def show():
     st.markdown("""
     <div class="test-hero">
         <div class="test-badge">ทดสอบโมเดล — ML Ensemble</div>
-        <h1>ทดสอบการทำนาย Ensemble</h1>
+        <h1>🚢 ทดสอบการทำนาย Ensemble</h1>
         <p>กรอกข้อมูลผู้โดยสาร Titanic เพื่อให้โมเดล Ensemble (SVM + ANN + Random Forest)
         ทำนายว่าจะ <strong style="color:#a5f3fc;">รอดชีวิต</strong>
         หรือ <strong style="color:#fca5a5;">ไม่รอดชีวิต</strong></p>
@@ -106,18 +105,16 @@ def show():
     # ── Load model ────────────────────────────────────────────────
     @st.cache_resource
     def load_artifacts():
-        with open("ensemble_model.pkl", "rb") as f:
-            model = pickle.load(f)
-        with open("ensemble_scaler.pkl", "rb") as f:
-            scaler = pickle.load(f)
+        from train_models import train_ensemble
+        model, scaler, features = train_ensemble()
         return model, scaler
 
-    try:
-        model, scaler = load_artifacts()
-    except Exception as e:
-        st.error(f"❌ ไม่พบไฟล์โมเดล: {e}")
-        st.info("กรุณาตรวจสอบว่ามีไฟล์ `ensemble_model.pkl` และ `ensemble_scaler.pkl` ในโฟลเดอร์เดียวกัน")
-        return
+    with st.spinner("⏳ กำลังเตรียมโมเดล (ครั้งแรกอาจใช้เวลาสักครู่)..."):
+        try:
+            model, scaler = load_artifacts()
+        except Exception as e:
+            st.error(f"❌ เกิดข้อผิดพลาด: {e}")
+            return
 
     # ── Layout ───────────────────────────────────────────────────
     col_form, col_result = st.columns([1.1, 0.9], gap="large")

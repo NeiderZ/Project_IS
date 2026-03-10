@@ -1,7 +1,5 @@
 import streamlit as st
 import numpy as np
-import pickle
-import tensorflow as tf
 
 def show():
     st.markdown("""
@@ -87,27 +85,25 @@ def show():
     st.markdown("""
     <div class="test-hero">
         <div class="test-badge">ทดสอบโมเดล — Neural Network</div>
-        <h1>ทดสอบการทำนาย ANN</h1>
+        <h1>🧪 ทดสอบการทำนาย ANN</h1>
         <p>กรอกข้อมูลนักเรียนด้านล่าง โมเดลจะทำนายว่านักเรียนจะ
         <strong style="color:#a5f3fc;">ผ่าน</strong> หรือ
         <strong style="color:#fca5a5;">ไม่ผ่าน</strong></p>
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Load model & scaler ───────────────────────────────────────
+    # ── Train model (cached — รันครั้งเดียวตอน startup) ──────────
     @st.cache_resource
     def load_artifacts():
-        model = tf.keras.models.load_model("ann_model.keras")
-        with open("ann_scaler.pkl", "rb") as f:
-            scaler = pickle.load(f)
-        return model, scaler
+        from train_models import train_ann
+        return train_ann()
 
-    try:
-        model, scaler = load_artifacts()
-    except Exception as e:
-        st.error(f"❌ ไม่พบไฟล์โมเดล: {e}")
-        st.info("กรุณาตรวจสอบว่ามีไฟล์ `ann_model.keras` และ `ann_scaler.pkl` อยู่ในโฟลเดอร์เดียวกับ app.py")
-        return
+    with st.spinner("⏳ กำลังเตรียมโมเดล (ครั้งแรกอาจใช้เวลาสักครู่)..."):
+        try:
+            model, scaler = load_artifacts()
+        except Exception as e:
+            st.error(f"❌ เกิดข้อผิดพลาด: {e}")
+            return
 
     # ── Input form ────────────────────────────────────────────────
     col_form, col_result = st.columns([1.1, 0.9], gap="large")
@@ -120,7 +116,7 @@ def show():
             format_func=lambda x: "👦 Male — ชาย" if x == "male" else "👧 Female — หญิง"
         )
         race = st.selectbox(
-            "กลุ่มชาติพันธุ์ (Race/Ethnicity) *เนื่องจากผู้สร้าง dataset ตั้งใจปกปิดข้อมูลเชื้อชาติจริงของนักเรียน เพื่อเหตุผลด้านความเป็นส่วนตัวและจริยธรรม จึงใช้เป็น (group A - E)",
+            "กลุ่มชาติพันธุ์ (Race/Ethnicity)",
             ["group A", "group B", "group C", "group D", "group E"],
             index=2
         )
