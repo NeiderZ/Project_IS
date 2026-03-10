@@ -95,7 +95,7 @@ def show():
     st.markdown("""
     <div class="test-hero">
         <div class="test-badge">ทดสอบโมเดล — ML Ensemble</div>
-        <h1>🚢 ทดสอบการทำนาย Ensemble</h1>
+        <h1>ทดสอบการทำนาย Ensemble</h1>
         <p>กรอกข้อมูลผู้โดยสาร Titanic เพื่อให้โมเดล Ensemble (SVM + ANN + Random Forest)
         ทำนายว่าจะ <strong style="color:#a5f3fc;">รอดชีวิต</strong>
         หรือ <strong style="color:#fca5a5;">ไม่รอดชีวิต</strong></p>
