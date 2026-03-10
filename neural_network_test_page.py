@@ -214,7 +214,7 @@ def show():
         </div>
         """, unsafe_allow_html=True)
 
-        predict = st.button("🔮 ทำนายผลการเรียน", type="primary", use_container_width=True)
+        predict = st.button("ทำนายผลการเรียน", type="primary", use_container_width=True)
 
         if predict:
             X_scaled = scaler.transform(features)
